@@ -57,6 +57,8 @@ jobs:
           name: VS Code Extensions
           path: tmp/saved-extensions
       - uses: ./.github/actions/gitConfig
+        with:
+          email: ${{ secrets.GH_EMAIL }}
       - name: 'Create git tag to map to the Release Version'
         run: |
           git tag v${{env.VERSION}}
