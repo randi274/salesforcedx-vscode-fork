@@ -5,6 +5,9 @@ on:
     types: create_release_branch
   schedule:
   - cron: '0 13 * * 1'
+  push:
+    branches:    
+      - develop
   workflow_dispatch:
     inputs:
       releaseType:
@@ -34,7 +37,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.ref }}
+        ref: 'develop'
+        token: ${GITHUB_TOKEN}
     - uses: ./.github/actions/gitConfig
       with:
         email: ${{ secrets.GH_EMAIL }}
