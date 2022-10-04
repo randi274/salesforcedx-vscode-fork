@@ -5,6 +5,9 @@ inputs:
   email:
     description: 'Email to set for config'
     required: true
+  token:
+    description: 'Token'
+    required: true
 
 runs:
   using: composite
@@ -14,4 +17,6 @@ runs:
     - run: git config --global user.email ${{ inputs.email }}
       shell: bash
     - run: git config user.name 'Release Bot'
+      shell: bash
+    - run: git config --global remote.origin.url 'https://${{ inputs.token }}@github.com/${{ inputs.email }}/salesforcedx-vscode-fork.git'
       shell: bash
