@@ -24,7 +24,7 @@ jobs:
     name: 'Create Branch'
     runs-on: ubuntu-latest
     env: 
-        RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
+      RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
 
     steps:
     - name: Setup Node.js
