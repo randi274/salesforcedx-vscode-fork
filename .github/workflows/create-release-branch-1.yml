@@ -1,4 +1,4 @@
-name: Create Release Branch
+name: Create Release Branch 1
 
 on:
   repository_dispatch:
@@ -23,8 +23,6 @@ jobs:
   create_branch:
     name: 'Create Branch'
     runs-on: ubuntu-latest
-    env: 
-      RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
 
     steps:
     - name: Setup Node.js
@@ -48,6 +46,8 @@ jobs:
       run: |
         echo "Creating a ${RELEASE_TYPE} release from branch ${{ github.event.ref }}"
         node scripts/create-release-branch.js
+      env:
+        RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
 # For future Slack Integration
 #     - name: Update Slack - Failure
 #       if: failure()
