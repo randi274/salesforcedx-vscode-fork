@@ -26,7 +26,9 @@ jobs:
   create_branch:
     name: 'Create Branch'
     runs-on: ubuntu-latest
-
+    env: 
+        RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}        
+        GITHUB_TOKEN: ${{ secrets.SF_IDEE_BOT_GITHUB_TOKEN }}
     steps:
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -48,9 +50,6 @@ jobs:
       run: |
         echo "Creating a ${RELEASE_TYPE} release from branch ${{ github.event.ref }}"
         node scripts/create-release-branch.js
-      env: 
-        RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}        
-        GITHUB_TOKEN: ${{ secrets.SF_IDEE_BOT_GITHUB_TOKEN }}
 # For future Slack Integration
 #     - name: Update Slack - Failure
 #       if: failure()
