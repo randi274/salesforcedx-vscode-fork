@@ -1,0 +1,41 @@
+name: Send Message
+
+on:
+  workflow_dispatch:
+    inputs:
+      messageToSend:
+        description: 'Message to send'
+        required: true
+        default: 'hello world'
+        type: string
+  
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Annnouncement
+        uses: slackapi/slack-github-action@v1.21.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SF_IDEE_BOT_GITHUB_TOKEN }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        with:
+          payload: |
+            {
+              "text": "${{ github.event.workflow_run.name }} worked! ${{ github.event.inputs.messageToSend}} ",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": ":bh-alert: `${{ github.event.workflow_run.name }}` worked! ${{ github.event.inputs.messageToSend}} :bh-alert:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Repo: ${{ github.event.workflow_run.repository.html_url }}\nWorkflow name: `${{ github.event.workflow_run.name }}`\nJob url: ${{ github.event.workflow_run.html_url }}"
+                  }
+                }
+              ]
+            }
