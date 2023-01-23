@@ -1,0 +1,43 @@
+name: End to End Tests
+on: 
+  pull_request_review:
+    types: [submitted]
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.event.review.state == 'approved'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        vscodeVersion:
+          - insiders
+          - stable
+    runs-on: ${{ matrix.os }}
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: 18
+        - name: Install Extension Dependencies
+          run: |
+            npm install
+            npm run compile;
+        # npm add chromedriver@107.0.3 -> not sure if I need this
+        - name: Install Test Dependencies
+          run: |
+            npm install
+          working-directory: ./automation-tests
+        - name: Run headless test
+          uses: GabrielBB/xvfb-action@v1
+          with:
+            run: npm run automation-tests
+            working-directory: ./automation-tests
+          env:
+            VSCODE_VERSION: ${{ matrix.vscodeVersion }}
+        - uses: actions/upload-artifact@v1
+          if: failure()
+          with:
+            name: logs
+            path: logs
