@@ -1,0 +1,36 @@
+name: End to End Tests
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - 'develop'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest]
+        vscodeVersion:
+          - stable
+    runs-on: ${{ matrix.os }}
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - uses: actions/setup-node@v3
+          with:
+            node-version: 16
+            cache: npm
+        - name: Clone automation tests
+          uses: actions/checkout@v2
+          with:
+            repository: randi274/vscode-automation-tests
+            path: automation-tests/
+            ref: main
+        - name: Install Extension Dependencies
+          run: |
+            npm install
+            npm run compile;
+        - name: Install Test Dependencies
+          run: |
+            npm install
+          working-directory: ./automation-tests
