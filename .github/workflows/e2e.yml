@@ -23,7 +23,7 @@ jobs:
         - name: Clone automation tests
           uses: actions/checkout@v2
           with:
-            repository: forcedotcom/salesforcedx-vscode-automation-tests/
+            repository: forcedotcom/salesforcedx-vscode-automation-tests
             path: automation-tests/
             ref: jb/initial-branch
         - name: Install Extension Dependencies
