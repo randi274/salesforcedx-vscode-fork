@@ -29,7 +29,6 @@ import {
   forceDataSoqlQuery,
   forceDebuggerStop,
   forceFunctionContainerlessStartCommand,
-  forceFunctionContainerStartCommand,
   forceFunctionCreate,
   forceFunctionDebugInvoke,
   forceFunctionInvoke,
@@ -101,7 +100,7 @@ import {
   ENABLE_SOBJECT_REFRESH_ON_STARTUP,
   ORG_OPEN_COMMAND
 } from './constants';
-import { workspaceContext, workspaceContextUtils } from './context';
+import { WorkspaceContext, workspaceContextUtils } from './context';
 import {
   decorators,
   disposeTraceFlagExpiration,
@@ -416,11 +415,6 @@ function registerCommands(
     forceFunctionContainerlessStartCommand
   );
 
-  const forceFunctionContainerStartCmd = vscode.commands.registerCommand(
-    'sfdx.force.function.container.start',
-    forceFunctionContainerStartCommand
-  );
-
   const forceFunctionInvokeCmd = vscode.commands.registerCommand(
     'sfdx.force.function.invoke',
     forceFunctionInvoke
@@ -459,7 +453,6 @@ function registerCommands(
     forceFunctionInvokeCmd,
     forceFunctionDebugInvokeCmd,
     forceFunctionStartCmd,
-    forceFunctionContainerStartCmd,
     forceFunctionStopCmd,
     forceOpenDocumentationCmd,
     forceOrgCreateCmd,
@@ -714,7 +707,7 @@ export async function activate(extensionContext: vscode.ExtensionContext) {
     SfdxCommandletExecutor,
     sfdxCoreSettings,
     SfdxWorkspaceChecker,
-    workspaceContext,
+    WorkspaceContext,
     taskViewService,
     telemetryService
   };
@@ -748,7 +741,7 @@ export async function activate(extensionContext: vscode.ExtensionContext) {
 }
 
 async function initializeProject(extensionContext: vscode.ExtensionContext) {
-  await workspaceContext.initialize(extensionContext);
+  await WorkspaceContext.getInstance().initialize(extensionContext);
 
   // Register org picker commands
   const orgList = new OrgList();
