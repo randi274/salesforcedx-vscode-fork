@@ -24,7 +24,7 @@ jobs:
           uses: actions/checkout@v2
           with:
             repository: forcedotcom/salesforcedx-vscode-automation-tests
-            path: automation-tests/
+            path: ./automation-tests
             ref: jb/initial-branch
         - name: Install Extension Dependencies
           run: |
