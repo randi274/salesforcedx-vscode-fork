@@ -35,6 +35,7 @@ const typesToIgnore = [
 
 function getPreviousReleaseBranch() {
   const releaseBranches = getReleaseBranches();
+  console.log(`Previous release branch was ${releaseBranches[0]}`);  
   return releaseBranches[0];
 }
 
