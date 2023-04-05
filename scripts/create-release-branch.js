@@ -6,6 +6,9 @@ const logger = require('./logger-util');
 const changeLogGeneratorUtils = require('./change-log-generator-utils');
 
 const RELEASE_TYPE = process.env['RELEASE_TYPE'];
+//this could be helpful IF the release branch was deleted for some disastrous reason.
+// OR if we didn't publish, but want to get release notes. Again, a CYA situation :) 
+const PREVIOUS_RELEASE_BRANCH = process.env['PREVIOUS_RELEASE_BRANCH'];
 
 shell.set('-e');
 shell.set('+v');
@@ -13,6 +16,7 @@ shell.set('+v');
 function getReleaseVersion() {
   const currentVersion = require('../packages/salesforcedx-vscode/package.json')
     .version;
+  //what about just using currentVersion for the release version branch?! 
   let [version, major, minor, patch] = currentVersion.match(/^(\d+)\.?(\d+)\.?(\*|\d+)$/);
 
   switch(RELEASE_TYPE) {
@@ -53,6 +57,7 @@ logger.info(`Release version: ${nextVersion}`);
 checkBaseBranch('develop');
 
 const releaseBranchName = `release/v${nextVersion}`;
+const currentReleaseBranchName = `release/v${currentVersion}`;
 
 // Check if release branch has already been created
 const remoteReleaseBranchExists = shell
@@ -110,9 +115,9 @@ if (!isBetaRelease()) {
   shell.exec(`git fetch`)
 
   // Generate changelog
-  const previousBranchName = changeLogGeneratorUtils.getPreviousReleaseBranch();
-  logger.info(`Previous release branch was ${previousBranchName}`);
-  const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, previousBranchName));
+  //const previousBranchName = PREVIOUS_RELEASE_BRANCH != '' ? PREVIOUS_RELEASE_BRANCH : changeLogGeneratorUtils.getPreviousReleaseBranch();
+  //logger.info(`Previous release branch was ${previousBranchName}`);
+  const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, currentReleaseBranchName));
   const groupedMessages = changeLogGeneratorUtils.getMessagesGroupedByPackage(parsedCommits, '');
   const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
   changeLogGeneratorUtils.writeChangeLog(changeLog);

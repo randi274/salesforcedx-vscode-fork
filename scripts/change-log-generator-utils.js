@@ -63,6 +63,8 @@ function getPreviousReleaseBranch() {
  * @returns 
  */
  function getCommits(releaseBranch, previousBranch) {
+  console.log('command was run:');
+  console.log(`git log --cherry-pick --oneline ${releaseBranch}...${previousBranch}`);
   const commits = shell
     .exec(
       `git log --cherry-pick --oneline ${releaseBranch}...${previousBranch}`,
