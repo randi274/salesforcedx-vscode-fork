@@ -35,7 +35,7 @@ jobs:
       result: ${{ steps.result.outputs.result }}
     env:
       RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
-      PREVIOUS_RELEASE_VERSION: ${{ github.event.inputs.previousReleasedVersion || '' }}
+      PREVIOUS_RELEASED_VERSION: ${{ github.event.inputs.previousReleasedVersion || '' }}
 
     steps:
     - name: Checkout
