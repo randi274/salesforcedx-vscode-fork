@@ -35,15 +35,16 @@ jobs:
       result: ${{ steps.result.outputs.result }}
     env:
       RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
-      PREVIOUS_RELEASED_VERSION: ${{ github.event.inputs.previousReleasedVersion || '' }}
+      PREVIOUS_RELEASE_VERSION: ${{ github.event.inputs.previousReleasedVersion || '' }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v1
       with:
         ref: 'develop'
         ssh-strict: false
         token: ${{ secrets.IDEE_GH_TOKEN }}
+        fetch-depth: 0
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
