@@ -105,9 +105,9 @@ shell.exec(`git commit -m "chore: update to version ${nextVersion}"`);
 // In this way, we can resolve conflicts between main branch and develop branch when merge main back to develop after the release.
 // beta versions should not be merged directly to develop, so we don't merge back or add to the changelog
 if (!isBetaRelease()) {
-  // shell.exec(`git checkout develop`)
-  // shell.exec(`git merge ${releaseBranchName}`)
-  // shell.exec(`git push -u origin develop`)
+  shell.exec(`git checkout develop`)
+  shell.exec(`git merge ${releaseBranchName}`)
+  shell.exec(`git push -u origin develop`)
   shell.exec(`git checkout ${releaseBranchName}`)
   shell.exec(`git fetch`)
 
@@ -124,4 +124,4 @@ if (!isBetaRelease()) {
 }
 
 // Push new release branch to remote
-//shell.exec(`git push -u origin ${releaseBranchName}`);
+shell.exec(`git push -u origin ${releaseBranchName}`);
