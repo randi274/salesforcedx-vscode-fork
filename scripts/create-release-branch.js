@@ -117,7 +117,7 @@ if (!isBetaRelease()) {
   try {
     const previousBranchName = PREVIOUS_RELEASE_BRANCH != '' ? PREVIOUS_RELEASE_BRANCH : changeLogGeneratorUtils.getPreviousReleaseBranch();
     logger.info(`Previous release branch was ${previousBranchName}`);
-    const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, previousBranchName));
+    const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, 'main'));
     const groupedMessages = changeLogGeneratorUtils.getMessagesGroupedByPackage(parsedCommits, '');
     const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
     changeLogGeneratorUtils.writeChangeLog(changeLog);
