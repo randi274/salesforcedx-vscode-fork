@@ -101,6 +101,7 @@ shell.exec('git add lerna.json');
 // Git commit
 shell.exec(`git commit -m "chore: update to version ${nextVersion}"`);
 
+
 // Merge release branch to develop as soon as it is cut.
 // In this way, we can resolve conflicts between main branch and develop branch when merge main back to develop after the release.
 // beta versions should not be merged directly to develop, so we don't merge back or add to the changelog
@@ -109,6 +110,7 @@ if (!isBetaRelease()) {
   shell.exec(`git merge ${releaseBranchName}`)
   shell.exec(`git push -u origin develop`)
   shell.exec(`git checkout ${releaseBranchName}`)
+  shell.exec(`git push -u origin ${releaseBranchName}`)
   shell.exec(`git fetch`)
 
   // Generate changelog
@@ -119,9 +121,11 @@ if (!isBetaRelease()) {
   const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
   changeLogGeneratorUtils.writeChangeLog(changeLog);
 
+  // Save changelog and push commit
   const commitCommand = `git commit -a -m "chore: generated CHANGELOG for ${releaseBranchName}"`;
   shell.exec(commitCommand);
+  shell.exec(`git push ${releaseBranchName}`);
+} else {
+  // For beta release, simply push release branch to remote
+  shell.exec(`git push -u origin ${releaseBranchName}`);
 }
-
-// Push new release branch to remote
-shell.exec(`git push -u origin ${releaseBranchName}`);
