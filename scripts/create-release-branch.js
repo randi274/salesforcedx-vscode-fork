@@ -6,6 +6,8 @@ const logger = require('./logger-util');
 const changeLogGeneratorUtils = require('./change-log-generator-utils');
 
 const RELEASE_TYPE = process.env['RELEASE_TYPE'];
+const PREVIOUS_RELEASED_VERSION = process.env['PREVIOUS_RELEASED_VERSION'];
+const PREVIOUS_RELEASE_BRANCH = `release/${PREVIOUS_RELEASED_VERSION}`;
 
 shell.set('-e');
 shell.set('+v');
@@ -103,16 +105,16 @@ shell.exec(`git commit -m "chore: update to version ${nextVersion}"`);
 // In this way, we can resolve conflicts between main branch and develop branch when merge main back to develop after the release.
 // beta versions should not be merged directly to develop, so we don't merge back or add to the changelog
 if (!isBetaRelease()) {
-  shell.exec(`git checkout develop`)
-  shell.exec(`git merge ${releaseBranchName}`)
-  shell.exec(`git push -u origin develop`)
+  // shell.exec(`git checkout develop`)
+  // shell.exec(`git merge ${releaseBranchName}`)
+  // shell.exec(`git push -u origin develop`)
   shell.exec(`git checkout ${releaseBranchName}`)
   shell.exec(`git fetch`)
 
   // Generate changelog
-  const latestReleasedVersion = String(shell.exec(`git describe --tags --abbrev=0`));
-  const latestReleasedBranchName = `release/${latestReleasedVersion}`
-  const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, latestReleasedBranchName));
+  const previousBranchName = PREVIOUS_RELEASE_BRANCH != '' ? PREVIOUS_RELEASE_BRANCH : changeLogGeneratorUtils.getPreviousReleaseBranch();
+  logger.info(`Previous release branch was ${previousBranchName}`);
+  const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, previousBranchName));
   const groupedMessages = changeLogGeneratorUtils.getMessagesGroupedByPackage(parsedCommits, '');
   const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
   changeLogGeneratorUtils.writeChangeLog(changeLog);
@@ -122,4 +124,4 @@ if (!isBetaRelease()) {
 }
 
 // Push new release branch to remote
-shell.exec(`git push -u origin ${releaseBranchName}`);
+//shell.exec(`git push -u origin ${releaseBranchName}`);

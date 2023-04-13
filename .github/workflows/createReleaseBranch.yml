@@ -17,6 +17,11 @@ on:
           - major
           - patch
           - beta
+      previousReleasedVersion:
+        description: 'Manual override to use for previous release version (ex: v56.16.0)'
+        required: false
+        default: ''
+        type: string
 
 jobs:
 
@@ -30,6 +35,7 @@ jobs:
       result: ${{ steps.result.outputs.result }}
     env:
       RELEASE_TYPE: ${{ github.event.inputs.releaseType || 'minor' }}
+      PREVIOUS_RELEASED_VERSION: ${{ github.event.inputs.previousReleasedVersion || '' }}
 
     steps:
     - name: Checkout
