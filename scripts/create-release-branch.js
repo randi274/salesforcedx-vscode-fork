@@ -110,7 +110,7 @@ if (!isBetaRelease()) {
   shell.exec(`git merge ${releaseBranchName}`)
   shell.exec(`git push -u origin develop`)
   shell.exec(`git checkout ${releaseBranchName}`)
-  shell.exec(`git push -u origin ${releaseBranchName}`)
+  //shell.exec(`git push -u origin ${releaseBranchName}`)
   shell.exec(`git fetch`)
 
   // Generate changelog
@@ -130,7 +130,6 @@ if (!isBetaRelease()) {
     logger.error(`Changelog could not be generated - you're on your own for this one!`);
     logger.error(e);
   }
-} else {
-  // For beta release, simply push release branch to remote
-  shell.exec(`git push -u origin ${releaseBranchName}`);
 }
+  // For beta release, simply push release branch to remote
+shell.exec(`git push -u origin ${releaseBranchName}`);
