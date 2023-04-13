@@ -114,17 +114,22 @@ if (!isBetaRelease()) {
   shell.exec(`git fetch`)
 
   // Generate changelog
-  const previousBranchName = PREVIOUS_RELEASE_BRANCH != '' ? PREVIOUS_RELEASE_BRANCH : changeLogGeneratorUtils.getPreviousReleaseBranch();
-  logger.info(`Previous release branch was ${previousBranchName}`);
-  const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, previousBranchName));
-  const groupedMessages = changeLogGeneratorUtils.getMessagesGroupedByPackage(parsedCommits, '');
-  const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
-  changeLogGeneratorUtils.writeChangeLog(changeLog);
+  try {
+    const previousBranchName = PREVIOUS_RELEASE_BRANCH != '' ? PREVIOUS_RELEASE_BRANCH : changeLogGeneratorUtils.getPreviousReleaseBranch();
+    logger.info(`Previous release branch was ${previousBranchName}`);
+    const parsedCommits = changeLogGeneratorUtils.parseCommits(changeLogGeneratorUtils.getCommits(releaseBranchName, previousBranchName));
+    const groupedMessages = changeLogGeneratorUtils.getMessagesGroupedByPackage(parsedCommits, '');
+    const changeLog = changeLogGeneratorUtils.getChangeLogText(releaseBranchName, groupedMessages);
+    changeLogGeneratorUtils.writeChangeLog(changeLog);
 
-  // Save changelog and push commit
-  const commitCommand = `git commit -a -m "chore: generated CHANGELOG for ${releaseBranchName}"`;
-  shell.exec(commitCommand);
-  shell.exec(`git push ${releaseBranchName}`);
+    // Save changelog and push commit
+    const commitCommand = `git commit -a -m "chore: generated CHANGELOG for ${releaseBranchName}"`;
+    shell.exec(commitCommand);
+    shell.exec(`git push ${releaseBranchName}`);
+  } catch (e) {
+    logger.error(`Changelog could not be generated - you're on your own for this one!`);
+    logger.error(e);
+  }
 } else {
   // For beta release, simply push release branch to remote
   shell.exec(`git push -u origin ${releaseBranchName}`);
